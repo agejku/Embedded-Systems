@@ -1,4 +1,2 @@
 INDEX VERSION 1.126+/Volumes/Data/Studium/6.Semester/Embedded Systems/†bungen/Project/M1/Embedded-Systems/.metadata/.plugins/org.eclipse.jdt.core
-245756650.index
-4228903317.index
 2955948295.index
