@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/NetNumber1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+   <Button
+       android:id="@+id/btnStopService"
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content"
+       android:layout_alignParentLeft="true"
+       android:layout_below="@+id/btnStartService"
+       android:onClick="stopService"
+       android:text="@string/stop_service" />
+
+   <TextView
+       android:id="@+id/network2"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignParentLeft="true"
+       android:layout_below="@+id/network1"
+       android:text="@string/network2"
+       android:textAppearance="?android:attr/textAppearanceMedium" />
+
+   <TextView
+       android:id="@+id/rssiNet2"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignBaseline="@+id/network2"
+       android:layout_alignBottom="@+id/network2"
+       android:layout_alignLeft="@+id/rssiNet1"
+       android:text="@string/start_rssi" />
+
+   <TextView
+       android:id="@+id/network3"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignParentLeft="true"
+       android:layout_below="@+id/network2"
+       android:text="@string/network3"
+       android:textAppearance="?android:attr/textAppearanceMedium" />
+
+   <TextView
+       android:id="@+id/rssiNet3"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignBaseline="@+id/network3"
+       android:layout_alignBottom="@+id/network3"
+       android:layout_alignLeft="@+id/rssiNet2"
+       android:text="@string/start_rssi" />
+
+   <Button
+       android:id="@+id/btnStartService"
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content"
+       android:layout_alignParentLeft="true"
+       android:layout_alignParentTop="true"
+       android:layout_marginTop="178dp"
+       android:onClick="startService"
+       android:text="@string/start_service" />
+
+   <TextView
+       android:id="@+id/rssiNet1"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_above="@+id/network2"
+       android:layout_centerHorizontal="true"
+       android:text="@string/start_rssi" />
+
+   <TextView
+       android:id="@+id/network1"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignParentLeft="true"
+       android:layout_alignParentTop="true"
+       android:text="@string/network1"
+       android:textAppearance="?android:attr/textAppearanceMedium" />
+
+   <TextView
+       android:id="@+id/TextView01"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignParentLeft="true"
+       android:layout_below="@+id/rssiNet3"
+       android:text="@string/network3"
+       android:textAppearance="?android:attr/textAppearanceMedium" />
+
+   <TextView
+       android:id="@+id/TextView02"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignParentLeft="true"
+       android:layout_below="@+id/network3"
+       android:layout_marginTop="21dp"
+       android:text="@string/network3"
+       android:textAppearance="?android:attr/textAppearanceMedium" />
+
+   <TextView
+       android:id="@+id/TextView03"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignBottom="@+id/TextView01"
+       android:layout_alignLeft="@+id/rssiNet3"
+       android:text="@string/start_rssi" />
+
+   <TextView
+       android:id="@+id/TextView04"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignBottom="@+id/TextView02"
+       android:layout_alignLeft="@+id/TextView03"
+       android:text="@string/start_rssi" />
+
+</RelativeLayout>

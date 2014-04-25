@@ -1,0 +1,112 @@
+package com.positionsensor.app;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
+
+
+public class PositionsensorActivity extends Activity {
+
+	private TextView net;
+	private StringBuilder sb;
+	//private FileOutputStream fos;
+
+	//Anzahl der auszugebenden Netzwerke!
+	//Es werden die Netzwerke mit hšchstem Level ausgegeben.
+	private static int NUMBER_OF_ITEMS = 5;
+	private String filename = "log_.csv";
+	private FileOutputStream outputStream;
+	private String resultString = "";
+	
+	// Broadcastreceiver erzeugen
+	private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			sb = new StringBuilder();
+			for (int i = 1; i <= NUMBER_OF_ITEMS; i++) {
+				if (intent.getStringExtra("id" + String.valueOf(i)) != null) {
+					sb.append(intent.getStringExtra("id" + String.valueOf(i))
+							+ "\n");
+
+					// Write the sensor data to a file
+					try {
+						context.getExternalFilesDir(null).mkdirs();
+						File file = new File(context.getExternalFilesDir(null), filename);
+						outputStream = new FileOutputStream(file, true);
+						outputStream.write(resultString.getBytes());
+						outputStream.write("\n".getBytes());
+						outputStream.close();
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} else
+					NUMBER_OF_ITEMS++;
+			}
+			net.setText(sb.toString());
+		}
+	};
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+	
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
+
+		// Textview initialisieren
+		net = (TextView) findViewById(R.id.network1);
+
+		// Filter erstellen und Receiver registrieren
+		if (broadcastReceiver != null) {
+			IntentFilter intentFilter = new IntentFilter("ToActivity");
+			registerReceiver(broadcastReceiver, intentFilter);
+		}
+	}
+
+	/**
+	 * Starten des Services
+	 * 
+	 * @param view
+	 */
+	public void startService(View view) {
+		startService(new Intent(getBaseContext(), PositionsensorService.class));
+		sendBroadcast();
+	}
+
+	/**
+	 * Stoppen des Services
+	 * 
+	 * @param view
+	 */
+	public void stopService(View view) {
+		stopService(new Intent(getBaseContext(), PositionsensorService.class));
+		sb = null;
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		unregisterReceiver(broadcastReceiver);
+	}
+
+	/**
+	 * Broadcast senden
+	 */
+	private void sendBroadcast() {
+		Intent intent = new Intent();
+		intent.setAction("ToService");
+		sendBroadcast(intent);
+	}
+}

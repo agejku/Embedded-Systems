@@ -1,0 +1,103 @@
+package com.positionsensor.app;
+
+
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+
+import android.widget.TextView;
+import android.widget.Toast;
+
+// http://www.vogella.com/tutorials/AndroidServices/article.html
+
+public class PositionsensorActivity extends Activity {
+
+	//private Intent service = new Intent(this, MyService.class);
+	//private Button btnStart, btnStop;
+	private TextView [] rssi = new TextView[10]; 
+	private TextView [] net = new TextView[10];
+	//public static int rssiValue;
+
+	private static final String ACTION_STRING_SERVICE = "ToService";
+	private static final String ACTION_STRING_ACTIVITY = "ToActivity";
+	private static final int NUMBER_OF_ITEMS=3;
+
+	// STEP1: Create a broadcast receiver
+	private BroadcastReceiver activityReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Toast.makeText(getApplicationContext(), "received message in activity..!", Toast.LENGTH_SHORT).show();
+			for(int i=1; i<=NUMBER_OF_ITEMS;i++){
+				net[i].setText(intent.getStringExtra("id"+String.valueOf(i)));
+				rssi[i].setText(String.valueOf(intent.getIntExtra("rssid"+String.valueOf(i), 0)));			}
+			
+			
+			//net[1].setText(intent.getStringExtra("id1"));
+			//rssi[1].setText(String.valueOf(intent.getIntExtra("rssid1", 0)));
+			//net[2].setText(intent.getStringExtra("id2"));
+			//rssi[2].setText(String.valueOf(intent.getIntExtra("rssid2", 0)));
+			//net[3].setText(intent.getStringExtra("id3"));
+			//rssi[3].setText(String.valueOf(intent.getIntExtra("rssid3", 0)));
+		}
+	};
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
+
+		//btnStart = (Button) findViewById(R.id.btnStartService);
+		//btnStop = (Button) findViewById(R.id.btnStopService);
+		rssi[1] = (TextView) findViewById(R.id.rssiNet1);
+		rssi[2] = (TextView) findViewById(R.id.rssiNet2);
+		rssi[3] = (TextView) findViewById(R.id.rssiNet3);
+		net[1] = (TextView) findViewById(R.id.network1);
+		net[2] = (TextView) findViewById(R.id.network2);
+		net[3] = (TextView) findViewById(R.id.network3);
+
+		// STEP2: register the receiver
+		if (activityReceiver != null) {
+			// Create an intent filter to listen to the broadcast sent with the
+			// action "ACTION_STRING_ACTIVITY"
+			IntentFilter intentFilter = new IntentFilter(ACTION_STRING_ACTIVITY);
+			// Map the intent filter to the receiver
+			registerReceiver(activityReceiver, intentFilter);
+		}
+
+	}
+	
+	// Method to start the service
+	// wird beim Dr¸cken des Start Button aufgerufen, aber dann passiert nichts mehr????
+	// onClick bereits im activity_main.xml aktiviert
+	public void startService(View view) {
+		startService(new Intent(getBaseContext(), PositionsensorService.class));
+		sendBroadcast();
+	}
+
+	// Method to stop the service
+	// onClick ebenfalls im activity_main.xml 
+	public void stopService(View view) {
+		stopService(new Intent(getBaseContext(), PositionsensorService.class));
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		Log.d("Service", "onDestroy");
+		// STEP3: Unregister the receiver
+		unregisterReceiver(activityReceiver);
+	}
+
+	// send broadcast from activity to all receivers listening to the action "ACTION_STRING_SERVICE"
+	private void sendBroadcast() {
+		Intent new_intent = new Intent();
+		new_intent.setAction(ACTION_STRING_SERVICE);
+		sendBroadcast(new_intent);
+	}	
+}

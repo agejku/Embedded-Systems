@@ -1,0 +1,178 @@
+package com.positionsensor.app;
+
+import com.wififingerprinting.R;
+
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+//import android.view.View.OnClickListener;
+//import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+// http://www.vogella.com/tutorials/AndroidServices/article.html
+
+public class PositionsensorActivity extends Activity {
+
+	//private Intent service = new Intent(this, MyService.class);
+	//private Button btnStart, btnStop;
+	private TextView rssi1, rssi2, rssi3;
+	private TextView net1, net2, net3;
+	public static int rssiValue;
+
+	private static final String ACTION_STRING_SERVICE = "ToService";
+	private static final String ACTION_STRING_ACTIVITY = "ToActivity";
+
+	// STEP1: Create a broadcast receiver
+	private BroadcastReceiver activityReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Toast.makeText(getApplicationContext(), "received message in activity..!", Toast.LENGTH_SHORT).show();
+			net1.setText(intent.getStringExtra("id1"));
+			rssi1.setText(String.valueOf(intent.getIntExtra("rssid1", 0)));
+			net2.setText(intent.getStringExtra("id2"));
+			rssi2.setText(String.valueOf(intent.getIntExtra("rssid2", 0)));
+			net3.setText(intent.getStringExtra("id3"));
+			rssi3.setText(String.valueOf(intent.getIntExtra("rssid3", 0)));
+		}
+	};
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+
+		//btnStart = (Button) findViewById(R.id.btnStartService);
+		//btnStop = (Button) findViewById(R.id.btnStopService);
+		rssi1 = (TextView) findViewById(R.id.rssiNet1);
+		rssi2 = (TextView) findViewById(R.id.rssiNet2);
+		rssi3 = (TextView) findViewById(R.id.rssiNet3);
+		net1 = (TextView) findViewById(R.id.network1);
+		net2 = (TextView) findViewById(R.id.network2);
+		net3 = (TextView) findViewById(R.id.network3);
+
+		// STEP2: register the receiver
+		if (activityReceiver != null) {
+			// Create an intent filter to listen to the broadcast sent with the
+			// action "ACTION_STRING_ACTIVITY"
+			IntentFilter intentFilter = new IntentFilter(ACTION_STRING_ACTIVITY);
+			// Map the intent filter to the receiver
+			registerReceiver(activityReceiver, intentFilter);
+		}
+
+		// Start the service on launching the application
+		//startService(new Intent(this, MyService.class));
+
+		/*btnStart.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Log.d("SampleActivity", "Sending broadcast to service");
+				
+				// WARUM GEHT DES NED !?!?!?!?!?!?!?!?!?!?!?
+//				startService(new Intent(this, MyService.class));
+				sendBroadcast();
+			}
+		});*/
+
+		/*btnStop.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// wird bei stopService sowieso aufgerufen
+				onDestroy();
+			}
+		});*/
+
+	}
+	
+	// Method to start the service
+	// wird beim Dr¸cken des Start Button aufgerufen, aber dann passiert nichts mehr????
+	// onClick bereits im activity_main.xml aktiviert
+	public void startService(View view) {
+		startService(new Intent(getBaseContext(), MyService.class));
+		sendBroadcast();
+	}
+
+	// Method to stop the service
+	// onClick ebenfalls im activity_main.xml 
+	public void stopService(View view) {
+		stopService(new Intent(getBaseContext(), MyService.class));
+	}
+
+	/*@Override
+	protected void onResume() {
+		super.onResume();
+	}*/
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		Log.d("Service", "onDestroy");
+		// STEP3: Unregister the receiver
+		unregisterReceiver(activityReceiver);
+	}
+
+	// send broadcast from activity to all receivers listening to the action "ACTION_STRING_SERVICE"
+	private void sendBroadcast() {
+		Intent new_intent = new Intent();
+		new_intent.setAction(ACTION_STRING_SERVICE);
+		sendBroadcast(new_intent);
+	}
+
+	// @Override
+	// public void onClick(View arg0) {
+	// // TODO Auto-generated method stub
+	// switch (arg0.getId()) {
+	// case R.id.btnStartService:
+	// displayRssi();
+	// break;
+	// default:
+	// break;
+	// }
+	//
+	// }
+	//
+	// private void displayRssi() {
+	//
+	// // ScanResult result0 = wifi.getScanResults().get(0);
+	// // String ssid0 = result0.SSID;
+	// // int rssi0 = result0.level;
+	// // String rssiString0 = String.valueOf(rssi0);
+	// // textStatus.append("\n" + ssid0 + "   " + rssiString0);
+	//
+	// WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+	// ScanResult result1 = wifi.getScanResults().get(0);
+	// String ssid1 = result1.SSID;
+	// int level1 = result1.level;
+	//
+	// net1.setText(ssid1);
+	// rssi1.setText(String.valueOf(level1));
+	//
+	// ScanResult result2 = wifi.getScanResults().get(1);
+	// String ssid2 = result2.SSID;
+	// int level2 = result2.level;
+	//
+	// net2.setText(ssid2);
+	// rssi2.setText(String.valueOf(level2));
+	//
+	// ScanResult result3 = wifi.getScanResults().get(2);
+	// String ssid3 = result3.SSID;
+	// int level3 = result3.level;
+	//
+	// net3.setText(ssid3);
+	// rssi3.setText(String.valueOf(level3));
+	//
+	// // TODO Auto-generated method stub
+	// // WifiManager wifi = (WifiManager)
+	// // getSystemService(Context.WIFI_SERVICE);
+	// // rssiValue = wifi.getConnectionInfo().getRssi();
+	// // rssi1.setText(String.valueOf(rssiValue));
+	// }
+}
